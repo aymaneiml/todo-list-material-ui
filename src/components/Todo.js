@@ -8,7 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import "../App.css";
 
-export default function Todo() {
+export default function Todo( {title, details }) {
   return (
     <>
       <Card
@@ -25,11 +25,11 @@ export default function Todo() {
           <Grid container spacing={2}>
             <Grid size={8} style={{}}>
               <Typography variant="h5" gutterBottom sx={{ textAlign: "left" }}>
-                First Task
+                {title}
               </Typography>
 
               <Typography variant="h6" gutterBottom sx={{ textAlign: "left" }}>
-                First Task Details
+                {details}
               </Typography>
             </Grid>
 
