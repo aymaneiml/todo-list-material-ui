@@ -7,8 +7,15 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import "../App.css";
+import { useState } from "react";
 
-export default function Todo( {title, details }) {
+export default function Todo({todo, handleCheck}) {
+
+  
+
+  function handleCheckClick(){
+    handleCheck(todo.id);
+  }
   return (
     <>
       <Card
@@ -25,11 +32,11 @@ export default function Todo( {title, details }) {
           <Grid container spacing={2}>
             <Grid size={8} style={{}}>
               <Typography variant="h5" gutterBottom sx={{ textAlign: "left" }}>
-                {title}
+                {todo.title}
               </Typography>
 
               <Typography variant="h6" gutterBottom sx={{ textAlign: "left" }}>
-                {details}
+                {todo.details}
               </Typography>
             </Grid>
 
@@ -42,12 +49,16 @@ export default function Todo( {title, details }) {
                 aria-label="checked"
                 className="iconButton"
                 style={{
-                  background: "white",
-                  color: "#8bc34a",
+                  background: todo.isCompleted ? "#8bc34a" : "white",
+                  color: todo.isCompleted ? "white":"#8bc34a",
                   border: "solid 3px #8bc34a",
                 }}
+                onClick={()=>{
+                  handleCheckClick()
+                }}
+                
               >
-                <CheckIcon />
+                <CheckIcon/>
               </IconButton>
 
               <IconButton
@@ -57,7 +68,7 @@ export default function Todo( {title, details }) {
                   background: "white",
                   color: "#1769aa",
                   border: "solid 3px #1769aa",
-                }}
+                }} 
               >
                 <EditIcon />
               </IconButton>

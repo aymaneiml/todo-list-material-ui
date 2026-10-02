@@ -27,6 +27,16 @@ export default function TodoList() {
   const [todos, setTodos] = useState(initialTodos);
   const [titleInput, setTitleInput]=useState('');
 
+  function handleCheckClick(todoId){
+    const updatedTodos = todos.map((t)=>{
+      if(t.id==todoId){
+        t.isCompleted=!t.isCompleted
+      }
+      return t;
+    });
+    setTodos(updatedTodos)
+  }
+
   function handlAddClick(){
     const newTodo={
       id: uuidv4(),
@@ -44,7 +54,7 @@ export default function TodoList() {
   }
 
   const todosJsx = todos.map((t) => {
-    return <Todo key={t.id} title={t.title} details={t.details} />
+    return <Todo key={t.id} todo={t} handleCheck={handleCheckClick}/>
   })
   return (
     <Container maxWidth="sm">
