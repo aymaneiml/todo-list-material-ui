@@ -13,28 +13,19 @@ import Grid from "@mui/material/Grid";
 import TextField from '@mui/material/TextField';
 import { v4 as uuidv4 } from 'uuid';
 import { useState } from "react";
-
-const initialTodos =[
-  {id:uuidv4(), title:"Task 1", details:"task 1 details", isCompleted:false},
-  {id:uuidv4(), title:"Task 2", details:"task 2 details", isCompleted:false},
-  {id:uuidv4(), title:"Task 3", details:"task 3 details", isCompleted:false},
-]
+import { useContext } from "react";
+import { TodosContext } from "../contexts/TodosContext";
 
 export default function TodoList() {
 
 
 
-  const [todos, setTodos] = useState(initialTodos);
+  const {todos, setTodos} = useContext(TodosContext);
+
   const [titleInput, setTitleInput]=useState('');
 
   function handleCheckClick(todoId){
-    const updatedTodos = todos.map((t)=>{
-      if(t.id==todoId){
-        t.isCompleted=!t.isCompleted
-      }
-      return t;
-    });
-    setTodos(updatedTodos)
+
   }
 
   function handlAddClick(){

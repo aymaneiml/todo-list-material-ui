@@ -8,13 +8,22 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import "../App.css";
 import { useState } from "react";
+import { useContext } from "react";
+import { TodosContext } from "../contexts/TodosContext";
+
 
 export default function Todo({todo, handleCheck}) {
 
-  
+  const {todos, setTodos} = useContext(TodosContext);
 
   function handleCheckClick(){
-    handleCheck(todo.id);
+      const updatedTodos = todos.map((t)=>{
+      if(t.id==todo.id){
+        t.isCompleted=!t.isCompleted
+      }
+      return t;
+    });
+    setTodos(updatedTodos)
   }
   return (
     <>
