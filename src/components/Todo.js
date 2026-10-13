@@ -10,25 +10,85 @@ import "../App.css";
 import { useState } from "react";
 import { useContext } from "react";
 import { TodosContext } from "../contexts/TodosContext";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
 
+export default function Todo({ todo, handleCheck }) {
+  const { todos, setTodos } = useContext(TodosContext);
 
-export default function Todo({todo, handleCheck}) {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const {todos, setTodos} = useContext(TodosContext);
-
-  function handleCheckClick(){
-      const updatedTodos = todos.map((t)=>{
-      if(t.id==todo.id){
-        t.isCompleted=!t.isCompleted
+  /// EVENT HANDLERS
+  function handleCheckClick() {
+    const updatedTodos = todos.map((t) => {
+      if (t.id == todo.id) {
+        t.isCompleted = !t.isCompleted;
       }
       return t;
     });
+    setTodos(updatedTodos);
+  }
+
+  function handleDeleteClick() {
+    setShowDeleteDialog(true);
+  }
+
+  function handleClose() {
+    setShowDeleteDialog(false);
+  }
+
+  function handleDeleteConfirm(){
+    // la liste va contenir just les task qui on pas le meme id de la tache selectionner
+    // les tash dans les quelles cette condition est appliquer
+    const updatedTodos = todos.filter((t)=>{
+      return todo.id != t.id
+    })
+
     setTodos(updatedTodos)
   }
+
+  ///======EVENT HANDLERS ===========
   return (
     <>
+      {/* DELETE MODAL */}
+
+      <Dialog
+        onClose={handleClose}
+        open={showDeleteDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        role="alertdialog"
+      >
+        <DialogTitle id="alert-dialog-title">{"DELETE TASK"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            You're going to delete this task. Are you sure ?
+          </DialogContentText>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleClose} autoFocus>
+            No, keep it
+          </Button>
+          <Button
+
+          onClick={handleDeleteConfirm}
+            sx={{
+              background: "red",
+              color: "white",
+            }}
+          >
+            Yes, delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* ====DELETE MODAL==== */}
       <Card
-      className="todoCard"
+        className="todoCard"
         sx={{
           minWidth: 275,
           background: "#283593",
@@ -52,22 +112,25 @@ export default function Todo({todo, handleCheck}) {
             {/* =========== ICONS BUTTON ============== */}
             <Grid
               size={4}
-              style={{ display: "flex", justifyContent: "space-around",alignItems: "center" }}
+              style={{
+                display: "flex",
+                justifyContent: "space-around",
+                alignItems: "center",
+              }}
             >
               <IconButton
                 aria-label="checked"
                 className="iconButton"
                 style={{
                   background: todo.isCompleted ? "#8bc34a" : "white",
-                  color: todo.isCompleted ? "white":"#8bc34a",
+                  color: todo.isCompleted ? "white" : "#8bc34a",
                   border: "solid 3px #8bc34a",
                 }}
-                onClick={()=>{
-                  handleCheckClick()
+                onClick={() => {
+                  handleCheckClick();
                 }}
-                
               >
-                <CheckIcon/>
+                <CheckIcon />
               </IconButton>
 
               <IconButton
@@ -77,11 +140,12 @@ export default function Todo({todo, handleCheck}) {
                   background: "white",
                   color: "#1769aa",
                   border: "solid 3px #1769aa",
-                }} 
+                }}
               >
                 <EditIcon />
               </IconButton>
 
+              {/* Delete Button */}
               <IconButton
                 aria-label="delete"
                 className="iconButton"
@@ -89,6 +153,9 @@ export default function Todo({todo, handleCheck}) {
                   background: "white",
                   color: "#b23c17",
                   border: "solid 3px #b23c17",
+                }}
+                onClick={() => {
+                  handleDeleteClick();
                 }}
               >
                 <DeleteIcon />
