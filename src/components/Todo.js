@@ -16,11 +16,16 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 
 export default function Todo({ todo, handleCheck }) {
   const { todos, setTodos } = useContext(TodosContext);
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showUpdateDialog, setShowUpdateDialog] = useState(false);
+  const [updatedTodo, setUpdatedTodo] = useState({
+    title:todo.title, details:todo.details
+  });
 
   /// EVENT HANDLERS
   function handleCheckClick() {
@@ -37,18 +42,41 @@ export default function Todo({ todo, handleCheck }) {
     setShowDeleteDialog(true);
   }
 
-  function handleClose() {
+  function handleDeleteDialogClose() {
     setShowDeleteDialog(false);
   }
 
-  function handleDeleteConfirm(){
+  function handleDeleteConfirm() {
     // la liste va contenir just les task qui on pas le meme id de la tache selectionner
     // les tash dans les quelles cette condition est appliquer
-    const updatedTodos = todos.filter((t)=>{
-      return todo.id != t.id
-    })
+    const updatedTodos = todos.filter((t) => {
+      return todo.id != t.id;
+    });
 
-    setTodos(updatedTodos)
+    setTodos(updatedTodos);
+  }
+
+  //====UPDATE FUNCTIONS
+
+  function handleUpdateDialogClose() {
+    setShowUpdateDialog(false);
+  }
+
+  function handleUpdateClick(){
+     setShowUpdateDialog(true);
+  }
+
+  function handleUpdateConfirm() {
+    const updatedTodos = todos.map((t)=>{
+      if(t.id == todo.id){
+        return {...t, title:updatedTodo.title, details:updatedTodo.details}
+      } else{
+        return t;
+      }
+    });
+
+    setTodos(updatedTodos);
+    setShowUpdateDialog(false)
   }
 
   ///======EVENT HANDLERS ===========
@@ -57,7 +85,7 @@ export default function Todo({ todo, handleCheck }) {
       {/* DELETE MODAL */}
 
       <Dialog
-        onClose={handleClose}
+        onClose={handleDeleteDialogClose}
         open={showDeleteDialog}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
@@ -71,12 +99,11 @@ export default function Todo({ todo, handleCheck }) {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={handleClose} autoFocus>
+          <Button onClick={handleDeleteDialogClose} autoFocus>
             No, keep it
           </Button>
           <Button
-
-          onClick={handleDeleteConfirm}
+            onClick={handleDeleteConfirm}
             sx={{
               background: "red",
               color: "white",
@@ -87,6 +114,68 @@ export default function Todo({ todo, handleCheck }) {
         </DialogActions>
       </Dialog>
       {/* ====DELETE MODAL==== */}
+
+      {/* UPDATE MODAL */}
+
+      <Dialog
+        onClose={handleUpdateDialogClose}
+        open={showUpdateDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        role="alertdialog"
+      >
+        <DialogTitle id="alert-dialog-title">{"EDIT TASK"}</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="name"
+            name="title"
+            label="Title"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={updatedTodo.title}
+            onChange={(event)=>{
+              setUpdatedTodo({...updatedTodo, title: event.target.value})
+            }}
+          />
+
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="name"
+            name="details"
+            label="Details"
+            type="details"
+            fullWidth
+            variant="standard"
+            value={updatedTodo.details}
+            onChange={(event)=>{
+              setUpdatedTodo({...updatedTodo, details: event.target.value})
+            }}
+          />
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleUpdateDialogClose} autoFocus>
+            No, keep it
+          </Button>
+          <Button
+            onClick={handleUpdateConfirm}
+            sx={{
+              background: "red",
+              color: "white",
+            }}
+          >
+            Update
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* ====UPDATE MODAL==== */}
+
       <Card
         className="todoCard"
         sx={{
@@ -140,6 +229,9 @@ export default function Todo({ todo, handleCheck }) {
                   background: "white",
                   color: "#1769aa",
                   border: "solid 3px #1769aa",
+                }}
+                onClick={() => {
+                  handleUpdateClick();
                 }}
               >
                 <EditIcon />
