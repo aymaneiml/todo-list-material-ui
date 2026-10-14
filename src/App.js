@@ -6,6 +6,15 @@ import { TodosContext } from "./contexts/TodosContext";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
+const theme = createTheme({
+
+  palette:{
+    primary:{
+      main:"#004d40"
+    }
+  }
+})
+
 const initialTodos = [
   {
     id: uuidv4(),
@@ -31,6 +40,9 @@ function App() {
   const [todos, setTodos] = useState(initialTodos);
 
   return (
+    <ThemeProvider theme={theme}>
+
+    
     <div
       className="App"
       style={{
@@ -45,6 +57,8 @@ function App() {
         <TodoList />
       </TodosContext.Provider>
     </div>
+
+    </ThemeProvider>
   );
 }
 

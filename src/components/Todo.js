@@ -194,7 +194,7 @@ export default function Todo({ todo, handleCheck }) {
           {/* ========================= */}
           <Grid container spacing={2}>
             <Grid size={8} style={{}}>
-              <Typography variant="h5" gutterBottom sx={{ textAlign: "left" }}>
+              <Typography variant="h5" gutterBottom sx={{ textAlign: "left" , textDecoration: todo.isCompleted ? "line-through" : "none"}}>
                 {todo.title}
               </Typography>
 

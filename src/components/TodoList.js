@@ -78,7 +78,10 @@ export default function TodoList() {
 
   return (
     <Container maxWidth="sm">
-      <Card sx={{ minWidth: 275 }}>
+      <Card sx={{ minWidth: 275 }} style={{
+        maxHeight:"80vh",
+        overflow:"scroll"
+      }}>
         <CardContent>
           {/* ========================= */}
           <Typography
@@ -97,6 +100,7 @@ export default function TodoList() {
             style={{ marginTop: "30px" }}
             value={displayedTodosType}
             onChange={changeDisplayedType}
+            color="primary"
           >
             <ToggleButton value="all">All</ToggleButton>
 
@@ -145,6 +149,7 @@ export default function TodoList() {
                 }}
                 style={{ width: "100%", height: "100%" }}
                 variant="contained"
+                disabled={titleInput.length <= 0}
               >
                 Add
               </Button>
