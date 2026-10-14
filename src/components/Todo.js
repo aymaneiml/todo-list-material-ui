@@ -17,10 +17,12 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import { ToastContext } from "../contexts/ToastContext";
 
 export default function Todo({ todo, handleCheck }) {
   
   const { todos, setTodos } = useContext(TodosContext);
+  const {showHideToast} = useContext(ToastContext);
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
@@ -38,10 +40,12 @@ export default function Todo({ todo, handleCheck }) {
     });
     setTodos(updatedTodos);
     localStorage.setItem("todos", JSON.stringify(updatedTodos))
+    showHideToast("the task is updated");
   }
 
   function handleDeleteClick() {
     setShowDeleteDialog(true);
+   
   }
 
   function handleDeleteDialogClose() {
@@ -57,7 +61,7 @@ export default function Todo({ todo, handleCheck }) {
 
     setTodos(updatedTodos);
     localStorage.setItem("todos", JSON.stringify(updatedTodos))
-
+     showHideToast("the task is deleted");
   }
 
   //====UPDATE FUNCTIONS
@@ -82,6 +86,7 @@ export default function Todo({ todo, handleCheck }) {
     setTodos(updatedTodos);
     localStorage.setItem("todos", JSON.stringify(updatedTodos))
     setShowUpdateDialog(false)
+     showHideToast("the task is updated");
   }
 
   ///======EVENT HANDLERS ===========

@@ -13,13 +13,18 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { TodosContext } from "../contexts/TodosContext";
+import { ToastContext } from "../contexts/ToastContext";
 
 export default function TodoList() {
   const { todos, setTodos } = useContext(TodosContext);
+  const {showHideToast} = useContext(ToastContext);
+
   const [titleInput, setTitleInput] = useState("");
   const [displayedTodosType, setDisplayedTodosType] = useState("all");
+    
+
 
   function handleCheckClick(todoId) {}
 
@@ -39,18 +44,23 @@ export default function TodoList() {
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
     //vider l'input
     setTitleInput("");
+
+    showHideToast("The new task is added with success")
   }
 
-
-
   //Filteration
-  const completedTodos = todos.filter((t) => {
-    return t.isCompleted;
-  });
 
-  const notCompletedTodos = todos.filter((t) => {
-    return !t.isCompleted;
-  });
+  const completedTodos = useMemo(() => {
+    return todos.filter((t) => {
+      return t.isCompleted;
+    });
+  }, [todos]);
+
+  const notCompletedTodos = useMemo(() => {
+    return todos.filter((t) => {
+      return !t.isCompleted;
+    });
+  }, [todos]);
 
   let todosToBeRendered = todos;
 
@@ -66,22 +76,24 @@ export default function TodoList() {
     return <Todo key={t.id} todo={t} handleCheck={handleCheckClick} />;
   });
 
-
   function changeDisplayedType(event) {
     setDisplayedTodosType(event.target.value);
   }
 
   useEffect(() => {
-    const storageTodos = JSON.parse(localStorage.getItem("todos"));
+    const storageTodos = JSON.parse(localStorage.getItem("todos")) ?? [];
     setTodos(storageTodos);
   }, []);
 
   return (
     <Container maxWidth="sm">
-      <Card sx={{ minWidth: 275 }} style={{
-        maxHeight:"80vh",
-        overflow:"scroll"
-      }}>
+      <Card
+        sx={{ minWidth: 275 }}
+        style={{
+          maxHeight: "80vh",
+          overflow: "scroll",
+        }}
+      >
         <CardContent>
           {/* ========================= */}
           <Typography
