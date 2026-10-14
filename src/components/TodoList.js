@@ -10,43 +10,72 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Todo from "./Todo";
 import Grid from "@mui/material/Grid";
-import TextField from '@mui/material/TextField';
-import { v4 as uuidv4 } from 'uuid';
+import TextField from "@mui/material/TextField";
+import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { TodosContext } from "../contexts/TodosContext";
 
 export default function TodoList() {
+  const { todos, setTodos } = useContext(TodosContext);
+  const [titleInput, setTitleInput] = useState("");
+  const [displayedTodosType, setDisplayedTodosType] = useState("all");
 
+  function handleCheckClick(todoId) {}
 
-
-  const {todos, setTodos} = useContext(TodosContext);
-
-  const [titleInput, setTitleInput]=useState('');
-
-  function handleCheckClick(todoId){
-
-  }
-
-  function handlAddClick(){
-    const newTodo={
+  function handlAddClick() {
+    const newTodo = {
       id: uuidv4(),
       title: titleInput,
-      details:'',
-      isCompleted:false
-    }
+      details: "",
+      isCompleted: false,
+    };
 
     // const newTodos=[...todos];
     // newTodos.push(newTodo);
     // setTodos(newTodos)
-    setTodos([...todos, newTodo])
+    const updatedTodos = [...todos, newTodo];
+    setTodos(updatedTodos);
+    localStorage.setItem("todos", JSON.stringify(updatedTodos));
     //vider l'input
-    setTitleInput('')
+    setTitleInput("");
   }
 
-  const todosJsx = todos.map((t) => {
-    return <Todo key={t.id} todo={t} handleCheck={handleCheckClick}/>
-  })
+
+
+  //Filteration
+  const completedTodos = todos.filter((t) => {
+    return t.isCompleted;
+  });
+
+  const notCompletedTodos = todos.filter((t) => {
+    return !t.isCompleted;
+  });
+
+  let todosToBeRendered = todos;
+
+  if (displayedTodosType == "completed") {
+    todosToBeRendered = completedTodos;
+  } else if (displayedTodosType == "non-completed") {
+    todosToBeRendered = notCompletedTodos;
+  } else {
+    todosToBeRendered = todos;
+  }
+
+  const todosJsx = todosToBeRendered.map((t) => {
+    return <Todo key={t.id} todo={t} handleCheck={handleCheckClick} />;
+  });
+
+
+  function changeDisplayedType(event) {
+    setDisplayedTodosType(event.target.value);
+  }
+
+  useEffect(() => {
+    const storageTodos = JSON.parse(localStorage.getItem("todos"));
+    setTodos(storageTodos);
+  }, []);
+
   return (
     <Container maxWidth="sm">
       <Card sx={{ minWidth: 275 }}>
@@ -66,12 +95,14 @@ export default function TodoList() {
             exclusive
             aria-label="text alignment"
             style={{ marginTop: "30px" }}
+            value={displayedTodosType}
+            onChange={changeDisplayedType}
           >
-            <ToggleButton value="left">All</ToggleButton>
+            <ToggleButton value="all">All</ToggleButton>
 
-            <ToggleButton value="center">Done</ToggleButton>
+            <ToggleButton value="completed">Completed</ToggleButton>
 
-            <ToggleButton value="right">New</ToggleButton>
+            <ToggleButton value="non-completed">Not Completed</ToggleButton>
           </ToggleButtonGroup>
 
           {/* ============Todo Component============ */}
@@ -79,20 +110,46 @@ export default function TodoList() {
 
           {/* ====== Input to add new ==========*/}
 
-          <Grid container spacing={2} style={{marginTop:"10px"}}>
-            <Grid size={8} style={{ display: "flex", justifyContent: "space-around",alignItems: "center"}}>
-              <TextField value={titleInput} onChange={(e) => {
-                setTitleInput(e.target.value)
-              }} style={{width:"100%"}} id="outlined-basic" label="Task Title" variant="outlined" />
+          <Grid container spacing={2} style={{ marginTop: "10px" }}>
+            <Grid
+              size={8}
+              style={{
+                display: "flex",
+                justifyContent: "space-around",
+                alignItems: "center",
+              }}
+            >
+              <TextField
+                value={titleInput}
+                onChange={(e) => {
+                  setTitleInput(e.target.value);
+                }}
+                style={{ width: "100%" }}
+                id="outlined-basic"
+                label="Task Title"
+                variant="outlined"
+              />
             </Grid>
 
-            <Grid size={4} style={{display: "flex", justifyContent: "space-around", alignItems: "center"}}>
-              <Button onClick={()=>{
-                handlAddClick()
-              }} style={{width:"100%", height:"100%"}} variant="contained">Add</Button>
+            <Grid
+              size={4}
+              style={{
+                display: "flex",
+                justifyContent: "space-around",
+                alignItems: "center",
+              }}
+            >
+              <Button
+                onClick={() => {
+                  handlAddClick();
+                }}
+                style={{ width: "100%", height: "100%" }}
+                variant="contained"
+              >
+                Add
+              </Button>
             </Grid>
           </Grid>
-
         </CardContent>
       </Card>
     </Container>

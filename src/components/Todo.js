@@ -19,6 +19,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 
 export default function Todo({ todo, handleCheck }) {
+  
   const { todos, setTodos } = useContext(TodosContext);
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -36,6 +37,7 @@ export default function Todo({ todo, handleCheck }) {
       return t;
     });
     setTodos(updatedTodos);
+    localStorage.setItem("todos", JSON.stringify(updatedTodos))
   }
 
   function handleDeleteClick() {
@@ -54,6 +56,8 @@ export default function Todo({ todo, handleCheck }) {
     });
 
     setTodos(updatedTodos);
+    localStorage.setItem("todos", JSON.stringify(updatedTodos))
+
   }
 
   //====UPDATE FUNCTIONS
@@ -76,6 +80,7 @@ export default function Todo({ todo, handleCheck }) {
     });
 
     setTodos(updatedTodos);
+    localStorage.setItem("todos", JSON.stringify(updatedTodos))
     setShowUpdateDialog(false)
   }
 
